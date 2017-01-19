@@ -26,7 +26,7 @@ namespace Ai.BehaviourBase.Node {
         /// 実行可能なNodeをPriorityが高い順にexecuteList内に並べていく。
         /// 同じPriorytyが存在する場合はnodeList内のindex順に並べる
         /// </summary>
-        protected override void DecideEffectiveNodes() {
+        protected override void ChooseAlignExecutableNodes() {
             for (int conparedPriority = 1; conparedPriority <= maxPriorityNum; conparedPriority++) {
                 List<BehaviourBaseNode> tmpNodeList = base.nodeList.FindAll(node => node.Priority == conparedPriority);
                 foreach (BehaviourBaseNode node in tmpNodeList) {
@@ -35,8 +35,8 @@ namespace Ai.BehaviourBase.Node {
             }
         }
 
-        public void OnCatchDecideEffeciveNodesRequest() {
-            DecideEffectiveNodes();
+        public void OnCatchChooseAlignExecutableNodesRequest() {
+            ChooseAlignExecutableNodes();
         }
     }
 }

@@ -51,7 +51,7 @@ public class PriorityModeNodeTest {
         }
 
         //優先度順に整列 TODO 実行可能判定
-        priorityModeNodeForTest.OnCatchDecideEffeciveNodesRequest();
+        priorityModeNodeForTest.OnCatchChooseAlignExecutableNodesRequest();
 
         //優先度順に並んでいるか確認
         List<BehaviourBaseNode> testList = priorityModeNodeForTest.GetExecuteNodeList();

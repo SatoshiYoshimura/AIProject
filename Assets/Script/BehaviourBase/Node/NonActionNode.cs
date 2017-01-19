@@ -24,7 +24,7 @@ namespace Ai.BehaviourBase.Node {
 
         private bool isRoot = false;
 
-        protected abstract void DecideEffectiveNodes();
+        protected abstract void ChooseAlignExecutableNodes();
 
     }
 }
