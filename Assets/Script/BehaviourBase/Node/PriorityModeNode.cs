@@ -30,7 +30,9 @@ namespace Ai.BehaviourBase.Node {
             for (int conparedPriority = 1; conparedPriority <= maxPriorityNum; conparedPriority++) {
                 List<BehaviourBaseNode> tmpNodeList = base.nodeList.FindAll(node => node.Priority == conparedPriority);
                 foreach (BehaviourBaseNode node in tmpNodeList) {
-                    base.executeNodeList.Add(node);
+					if(node.CanExecute()){
+						base.executeNodeList.Add(node);
+					}
                 }
             }
         }

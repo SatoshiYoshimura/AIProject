@@ -1,4 +1,6 @@
-﻿namespace Ai.BehaviourBase.Node {
+﻿using Ai.BehaviourBase.EffectiveExecute;
+
+namespace Ai.BehaviourBase.Node {
     public abstract class BehaviourBaseNode {
         /// <summary>
         /// parrentNodeがpriorityMode時に参照する
@@ -11,9 +13,27 @@
             set { priority = value; }
         }
 
+		/// <summary>
+		/// CanExecute()によって当ノードが実行可能かどうかを判断してくれる存在
+		/// </summary>
+		protected EffectiveExecuteManager effectiveExecuteManager = null;
+
+		public BehaviourBaseNode(){
+			effectiveExecuteManager = new EffectiveExecuteManager();
+		}
+
         /// <summary>
         /// ParentNodeはChildNodeListをDoexecuteを実行しながらRoop回す
         /// </summary>
         public abstract void DoExecute();
+
+		/// <summary>
+		/// 当ノードが実行可能かどうか　
+		/// </summary>
+		/// <returns><c>true</c> if this instance can execute; otherwise, <c>false</c>.</returns>
+		public bool CanExecute(){
+			return effectiveExecuteManager.CanExecute();
+		}
+
     }
 }

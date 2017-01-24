@@ -11,13 +11,21 @@ public class PriorityModeNodeTest {
         public int Id {
             set { id = value; }
             get { return id; }
-        }
+        }		
 
         public override void DoExecute() {
             base.DoExecute();
             Debug.Log("これがこのノードのidだよ: " + id.ToString());
             Debug.Log("これがこのノードのプライオリティだよ: " + priority.ToString());
         }
+
+		/// <summary>
+		/// テスト用に実行可能条件Dataを設定
+		/// </summary>
+		public void ConfigureTestEffectiveExecuteData(){
+			//TODO ここにテストようEffectiveExecuteの生成とAddをかく
+			effectiveExecuteManager.AddEffectiveExecute();
+		}
     }
 
     /// <summary>
