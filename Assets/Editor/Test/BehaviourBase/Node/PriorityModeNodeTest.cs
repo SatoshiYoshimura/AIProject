@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Ai.BehaviourBase.Node;
-using System.Collections.Generic;
+using Ai.BehaviourBase.EffectiveExecute;
 
 public class PriorityModeNodeTest {
 
@@ -13,6 +14,17 @@ public class PriorityModeNodeTest {
             get { return id; }
         }		
 
+		/// <summary>
+		/// 既存の設定されているものを削除しEffectiveExecuteMangerを設定します
+		/// </summary>
+		/// <param name="effectiveExecuteManager">Effective execute manager.</param>
+		public void SetEffectiveExecuteManager(EffectiveExecuteManager effectiveExecuteManager){
+			if( base.effectiveExecuteManager != null){
+				base.effectiveExecuteManager = null;
+			}
+			base.effectiveExecuteManager = effectiveExecuteManager;
+		}
+
         public override void DoExecute() {
             base.DoExecute();
             Debug.Log("これがこのノードのidだよ: " + id.ToString());
@@ -20,16 +32,30 @@ public class PriorityModeNodeTest {
         }
 
 		/// <summary>
-		/// テスト用に実行可能条件Dataを設定
+		/// テスト用に実行可能ノードになる設定を行います
+		/// </summary>
+		public void ConfigureCanExecuteData(){
+			effectiveExecuteManager.ClearEffectveExecute();
+			TestEffectiveExecute testEffectiveExecute = new TestEffectiveExecute();
+			testEffectiveExecute.TestNumber = 1;
+			effectiveExecuteManager.AddEffectiveExecute(testEffectiveExecute);
+		}
+
+		/// <summary>
+		/// テスト用に実行可能条件Dataを設定 TestNumber 1 ~ 10の EffectiveExecuteを設定
 		/// </summary>
 		public void ConfigureTestEffectiveExecuteData(){
-			//TODO ここにテストようEffectiveExecuteの生成とAddをかく
-			effectiveExecuteManager.AddEffectiveExecute();
+			effectiveExecuteManager.ClearEffectveExecute();
+			for(uint i = 0; i < 10; i++) {
+				TestEffectiveExecute testEffectiveExecute = new TestEffectiveExecute();
+				testEffectiveExecute.TestNumber = i;
+				effectiveExecuteManager.AddEffectiveExecute(testEffectiveExecute);
+			}
 		}
     }
 
     /// <summary>
-    /// テストように本来外部にはみせないexecuteNodeListを返す関数持ちのPriorityModeNode
+    /// テスト用に本来外部にはみせないexecuteNodeListを返す関数持ちのPriorityModeNode
     /// </summary>
     public class PriorityModeNodeForTest : PriorityModeNode{
         public List<BehaviourBaseNode> GetExecuteNodeList() {
@@ -37,13 +63,38 @@ public class PriorityModeNodeTest {
         }
     }
 
+	[Test]
+	/// <summary>
+	/// 有効なものだけをPickし優先度順に整列するかのTest
+	/// </summary>
+	public void AndExecuteEfectiveDecideTest(){
+		PriorityModeNodeForTest priorityModeNodeForTest = new PriorityModeNodeForTest();
+		int maxNodeCount = 10;
+		//整列検証用データを用意
+		for(int i = 0; i < maxNodeCount; i++) {
+			PriorityTestActionNode priorityTestActionNode = new PriorityTestActionNode();
+			AndEffectiveExecuteManager andEffectiveExecuteManager = new AndEffectiveExecuteManager();
+			priorityTestActionNode.SetEffectiveExecuteManager(andEffectiveExecuteManager);
+			priorityTestActionNode.ConfigureTestEffectiveExecuteData();	
+		}
+		//TODO 以下に実行可能が加味されて優先度順にPickされてるかの　テストを書く
+
+	}
+		
+
     [Test]
+	/// <summary>
+	/// 優先度順に整列するかのTest
+	/// </summary>
     public void DecideEffectiveNodesTest() {
         //整列検証用データを用意
         PriorityModeNodeForTest priorityModeNodeForTest = new PriorityModeNodeForTest();
         int maxNodeCount = 10;
         for (int i = 0; i < maxNodeCount; i++) {
             PriorityTestActionNode priorityTestActionNode = new PriorityTestActionNode();
+			AndEffectiveExecuteManager andEffectiveExecuteManager = new AndEffectiveExecuteManager();
+			priorityTestActionNode.SetEffectiveExecuteManager(andEffectiveExecuteManager);
+			priorityTestActionNode.ConfigureCanExecuteData();
             priorityTestActionNode.Id = i;
             if ( i < 3) {
                 priorityTestActionNode.Priority = 3;
@@ -58,7 +109,7 @@ public class PriorityModeNodeTest {
             priorityModeNodeForTest.AddNode(priorityTestActionNode);    
         }
 
-        //優先度順に整列 TODO 実行可能判定
+        //優先度順に整列
         priorityModeNodeForTest.OnCatchChooseAlignExecutableNodesRequest();
 
         //優先度順に並んでいるか確認

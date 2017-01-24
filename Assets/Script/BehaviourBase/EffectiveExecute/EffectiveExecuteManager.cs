@@ -9,12 +9,19 @@ namespace Ai.BehaviourBase.EffectiveExecute {
 			effectiveExecuteList = new List<EffectiveExecute>();
 		}
 
+		/// <summary>
+		/// EffectiveExecuteをListに追加します
+		/// </summary>
+		/// <param name="effectiveExecute">Effective execute.</param>
 		public void AddEffectiveExecute(EffectiveExecute effectiveExecute){
-			if(effectiveExecute == null){
-				Debug.Assert("effectiveExecute cannot add becouse that is null");
-			}
-
 			effectiveExecuteList.Add(effectiveExecute);
+		}
+
+		/// <summary>
+		/// EffectiveexecuteListをClearします
+		/// </summary>
+		public void ClearEffectveExecute(){
+			effectiveExecuteList.Clear();
 		}
 
         public virtual bool CanExecute() {
