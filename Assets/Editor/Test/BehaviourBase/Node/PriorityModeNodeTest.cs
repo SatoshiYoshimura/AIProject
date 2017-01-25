@@ -7,6 +7,7 @@ using Ai.BehaviourBase.EffectiveExecute;
 
 public class PriorityModeNodeTest {
 
+#region Test Declear
     public class PriorityTestActionNode : ActionNode{
         private int id = 0;
         public int Id {
@@ -35,23 +36,41 @@ public class PriorityModeNodeTest {
 		/// テスト用に実行可能ノードになる設定を行います
 		/// </summary>
 		public void ConfigureCanExecuteData(){
-			effectiveExecuteManager.ClearEffectveExecute();
-			TestEffectiveExecute testEffectiveExecute = new TestEffectiveExecute();
-			testEffectiveExecute.TestNumber = 1;
-			effectiveExecuteManager.AddEffectiveExecute(testEffectiveExecute);
-		}
+			base.effectiveExecuteManager.ClearEffectveExecute();
+            for (int i = 1; i < 6; i++) {
+                TestEffectiveExecute testEffectiveExecute = new TestEffectiveExecute();
+                uint testNum = (uint)(i % 2);
+                if (testNum != 0) {
+                    testEffectiveExecute.TestNumber = testNum;
+                    base.effectiveExecuteManager.AddEffectiveExecute(testEffectiveExecute);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// テスト用にAndの場合実行不可能ノードになり、Orの場合実行可能になる設定を行います
+        /// </summary>
+        public void ConfigureMixedExecuteData() {
+            effectiveExecuteManager.ClearEffectveExecute();
+            for (int i = 0; i < 5; i++) {
+                TestEffectiveExecute testEffectiveExecute = new TestEffectiveExecute();
+                testEffectiveExecute.TestNumber = (uint)(i);
+                effectiveExecuteManager.AddEffectiveExecute(testEffectiveExecute);
+            }
+        }
 
-		/// <summary>
-		/// テスト用に実行可能条件Dataを設定 TestNumber 1 ~ 10の EffectiveExecuteを設定
-		/// </summary>
-		public void ConfigureTestEffectiveExecuteData(){
-			effectiveExecuteManager.ClearEffectveExecute();
-			for(uint i = 0; i < 10; i++) {
-				TestEffectiveExecute testEffectiveExecute = new TestEffectiveExecute();
-				testEffectiveExecute.TestNumber = i;
-				effectiveExecuteManager.AddEffectiveExecute(testEffectiveExecute);
-			}
-		}
+        /// <summary>
+        /// テスト用に実行不可能ノードになる設定を行います
+        /// </summary>
+        public void ConfigureCannotExecuteData() {
+            effectiveExecuteManager.ClearEffectveExecute();
+            for (int i = 0; i < 5; i++) {
+                TestEffectiveExecute testEffectiveExecute = new TestEffectiveExecute();
+                testEffectiveExecute.TestNumber = (uint)(i * 2);
+                effectiveExecuteManager.AddEffectiveExecute(testEffectiveExecute);
+            }
+        }
+
     }
 
     /// <summary>
@@ -63,24 +82,87 @@ public class PriorityModeNodeTest {
         }
     }
 
-	[Test]
-	/// <summary>
-	/// 有効なものだけをPickし優先度順に整列するかのTest
-	/// </summary>
-	public void AndExecuteEfectiveDecideTest(){
-		PriorityModeNodeForTest priorityModeNodeForTest = new PriorityModeNodeForTest();
-		int maxNodeCount = 10;
-		//整列検証用データを用意
-		for(int i = 0; i < maxNodeCount; i++) {
-			PriorityTestActionNode priorityTestActionNode = new PriorityTestActionNode();
-			AndEffectiveExecuteManager andEffectiveExecuteManager = new AndEffectiveExecuteManager();
-			priorityTestActionNode.SetEffectiveExecuteManager(andEffectiveExecuteManager);
-			priorityTestActionNode.ConfigureTestEffectiveExecuteData();	
-		}
-		//TODO 以下に実行可能が加味されて優先度順にPickされてるかの　テストを書く
+#endregion
 
-	}
-		
+#region TestMethod
+
+    [Test]
+    /// <summary>
+    /// 単品のPriorityNodeに対しAndEffectiveExecuteが正しく動いているかのTest
+    /// </summary>
+    public void AndExecuteEfectiveDecideTest() {
+        //全部true がtrueかどうか
+        PriorityTestActionNode canExecutePriorityTestActionNode = new PriorityTestActionNode();
+        AndEffectiveExecuteManager canAndEffectiveExecuteManager = new AndEffectiveExecuteManager();
+        canExecutePriorityTestActionNode.SetEffectiveExecuteManager(canAndEffectiveExecuteManager);
+        canExecutePriorityTestActionNode.ConfigureCanExecuteData();
+
+        Assert.AreEqual(true, canExecutePriorityTestActionNode.CanExecute());
+
+        //全部falseがfalseかどうか
+        PriorityTestActionNode cannotExecutePriorityTestActionNode = new PriorityTestActionNode();
+        AndEffectiveExecuteManager cannotAndEffectiveExecuteManager = new AndEffectiveExecuteManager();
+        cannotExecutePriorityTestActionNode.SetEffectiveExecuteManager(cannotAndEffectiveExecuteManager);
+        cannotExecutePriorityTestActionNode.ConfigureCannotExecuteData();
+
+        Assert.AreEqual(false, cannotExecutePriorityTestActionNode.CanExecute());
+
+        //一部 falseがfalseかどうか
+        PriorityTestActionNode mixedExecutePriorityTestActionNode = new PriorityTestActionNode();
+        AndEffectiveExecuteManager mixedAndEffectiveExecuteManager = new AndEffectiveExecuteManager();
+        mixedExecutePriorityTestActionNode.SetEffectiveExecuteManager(mixedAndEffectiveExecuteManager);
+        mixedExecutePriorityTestActionNode.ConfigureMixedExecuteData();
+
+        Assert.AreEqual(false, cannotExecutePriorityTestActionNode.CanExecute());
+    }
+
+    [Test]
+    /// <summary>
+    /// trueとfalseをふくむAnd条件でで有効なものだけをPickし優先度順に整列するかのTest
+    /// </summary>
+    public void NodeListAndExecuteEfectiveDecideTest() {
+        PriorityModeNodeForTest priorityModeNodeForTest = new PriorityModeNodeForTest();
+        int maxNodeCount = 10;
+        int descPriority = 10;
+        //整列検証用データを用意
+        // 0 ~ 2 をfalseのみ、　3 ~ 5をtrue のみ 6 以上 を Mixed
+        //Priorityは　降順でつける
+        // 6 5 4　Pickが期待される 
+        for (int i = 0; i < maxNodeCount; i++, descPriority--) {
+            PriorityTestActionNode priorityTestActionNode = new PriorityTestActionNode();
+            AndEffectiveExecuteManager andEffectiveExecuteManager = new AndEffectiveExecuteManager();
+            priorityTestActionNode.SetEffectiveExecuteManager(andEffectiveExecuteManager);
+            priorityTestActionNode.Id = i;
+            priorityModeNodeForTest.Priority = descPriority;
+
+            if ( i < 3) {
+                priorityTestActionNode.ConfigureCannotExecuteData();
+            }else if ( i < 6 ) {
+                priorityTestActionNode.ConfigureCanExecuteData();
+            }else {
+                priorityTestActionNode.ConfigureMixedExecuteData();
+            }
+
+            priorityModeNodeForTest.AddNode(priorityTestActionNode);
+        }
+
+        //実行可能が加味されて優先度順にPickされてるかTest
+        priorityModeNodeForTest.OnCatchChooseAlignExecutableNodesRequest();
+
+        List<BehaviourBaseNode> testList = priorityModeNodeForTest.GetExecuteNodeList();
+        int count = 0;
+        foreach (PriorityTestActionNode node in testList) {
+            if (count == 0) {
+                Assert.AreEqual(6, node.Id);
+            } else if(count == 1) {
+                Assert.AreEqual(5, node.Id);
+            } else {
+                Assert.AreEqual(4, node.Id);
+            }
+            count++;
+        }
+    }
+
 
     [Test]
 	/// <summary>
@@ -151,4 +233,5 @@ public class PriorityModeNodeTest {
 		//The object has a new name
 		Assert.AreEqual(newGameObjectName, gameObject.name);
 	}
+#endregion
 }

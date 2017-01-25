@@ -12,6 +12,7 @@ namespace Ai.BehaviourBase.EffectiveExecute {
 		private uint testNumber = 0;
 		public uint TestNumber {
 			set { testNumber = value; }
+            get { return testNumber; }
 		}
 
 		/// <summary>
@@ -50,7 +51,12 @@ namespace Ai.BehaviourBase.EffectiveExecute {
 			effectiveExecuteTest_2.TestNumber = 2;
 			base.effectiveExecuteList.Add(effectiveExecuteTest_2);
 			Assert.AreEqual(false, CanExecute());
-		}
+
+            TestEffectiveExecute effectiveExecuteTest_4 = new TestEffectiveExecute();
+            effectiveExecuteTest_4.TestNumber = 4;
+            base.effectiveExecuteList.Add(effectiveExecuteTest_4);
+            Assert.AreEqual(false, CanExecute());
+        }
 	}
 }
 

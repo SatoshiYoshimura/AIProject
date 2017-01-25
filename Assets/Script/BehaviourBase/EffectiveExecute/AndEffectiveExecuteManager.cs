@@ -8,7 +8,6 @@ namespace Ai.BehaviourBase.EffectiveExecute {
         /// </summary>
         /// <returns>bool</returns>
         public override bool CanExecute() {
-            base.CanExecute();
             if (effectiveExecuteList.Exists(x => x.DecideIsEffecive() == false)) {
                 return false;
             }
