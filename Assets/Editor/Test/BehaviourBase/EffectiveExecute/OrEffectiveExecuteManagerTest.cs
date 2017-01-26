@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace Ai.BehaviourBase.EffectiveExecute {
 
-    public class OrEffectiveExecuteManagerTest : OrEffectiveExecuteManger {
+    public class OrEffectiveExecuteManagerTest : OrEffectiveExecuteManager {
 
         [Test]
         public void TestAndEffectiveExecuteManager() {

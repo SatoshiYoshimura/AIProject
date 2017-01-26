@@ -118,6 +118,37 @@ public class PriorityModeNodeTest {
 
     [Test]
     /// <summary>
+    /// 単品のPriorityNodeに対しOrEffectiveExecuteが正しく動いているかのTest
+    /// </summary>
+    public void OrExecuteEfectiveDecideTest() {
+        //全部true がtrueかどうか
+        PriorityTestActionNode canExecutePriorityTestActionNode = new PriorityTestActionNode();
+        OrEffectiveExecuteManager canOrEffectiveExecuteManager = new OrEffectiveExecuteManager();
+        canExecutePriorityTestActionNode.SetEffectiveExecuteManager(canOrEffectiveExecuteManager);
+        canExecutePriorityTestActionNode.ConfigureCanExecuteData();
+
+        Assert.AreEqual(true, canExecutePriorityTestActionNode.CanExecute());
+
+        //全部falseがfalseかどうか
+        PriorityTestActionNode cannotExecutePriorityTestActionNode = new PriorityTestActionNode();
+        OrEffectiveExecuteManager cannotOrEffectiveExecuteManager = new OrEffectiveExecuteManager();
+        cannotExecutePriorityTestActionNode.SetEffectiveExecuteManager(cannotOrEffectiveExecuteManager);
+        cannotExecutePriorityTestActionNode.ConfigureCannotExecuteData();
+
+        Assert.AreEqual(false, cannotExecutePriorityTestActionNode.CanExecute());
+
+        //一部 trueがあるとtrueかどうか
+        PriorityTestActionNode mixedExecutePriorityTestActionNode = new PriorityTestActionNode();
+        OrEffectiveExecuteManager mixedOrEffectiveExecuteManager = new OrEffectiveExecuteManager();
+        mixedExecutePriorityTestActionNode.SetEffectiveExecuteManager(mixedOrEffectiveExecuteManager);
+        mixedExecutePriorityTestActionNode.ConfigureMixedExecuteData();
+
+        Assert.AreEqual(true, mixedExecutePriorityTestActionNode.CanExecute());
+    }
+
+
+    [Test]
+    /// <summary>
     /// trueとfalseをふくむAnd条件でで有効なものだけをPickし優先度順に整列するかのTest
     /// </summary>
     public void NodeListAndExecuteEfectiveDecideTest() {

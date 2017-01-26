@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 namespace Ai.BehaviourBase.EffectiveExecute {
-    public class OrEffectiveExecuteManger : EffectiveExecuteManager {
+    public class OrEffectiveExecuteManager : EffectiveExecuteManager {
 
         /// <summary>
         /// child EffectiveExecuteに一つでもIsEffectiveがある場合trueを返す
