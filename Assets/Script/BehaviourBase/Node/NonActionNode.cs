@@ -26,5 +26,8 @@ namespace Ai.BehaviourBase.Node {
 
         protected abstract void ChooseAlignExecutableNodes();
 
+        public void OnCatchChooseAlignExecutableNodesRequest() {
+            ChooseAlignExecutableNodes();
+        }
     }
 }

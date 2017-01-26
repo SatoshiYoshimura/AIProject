@@ -9,6 +9,9 @@ namespace Ai.BehaviourBase.Node {
         /// </summary>
         private int maxPriorityNum = 0;
 
+        /// <summary>
+        /// trueにするとOnOffModeのノードとなる
+        /// </summary>
         public bool IsEnableOnOffMode {
             get { return isEnableOnOffMode; }
         }
@@ -43,10 +46,6 @@ namespace Ai.BehaviourBase.Node {
 					}
                 }
             }
-        }
-
-        public void OnCatchChooseAlignExecutableNodesRequest() {
-            ChooseAlignExecutableNodes();
         }
     }
 }
