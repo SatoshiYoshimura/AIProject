@@ -1,13 +1,18 @@
 ﻿using System.Collections.Generic;
 
 namespace Ai.BehaviourBase.Node {
-    public class PriorityModeNode : NonActionNode {
+    public class PriorityModeNode : NonActionNode, OnOffModeNodeInterface {
 
         /// <summary>
         /// childList内にあるpriorityの最大値
         /// nodeがnodeListにaddされるたびにpriorityを比較し、既存より大きかったら更新する
         /// </summary>
         private int maxPriorityNum = 0;
+
+        public bool IsEnableOnOffMode {
+            get { return isEnableOnOffMode; }
+        }
+        private bool isEnableOnOffMode = false;
 
         public override void AddNode(BehaviourBaseNode node) {
             base.AddNode(node);
@@ -19,6 +24,9 @@ namespace Ai.BehaviourBase.Node {
         public override void DoExecute() {
             foreach (BehaviourBaseNode node in base.executeNodeList) {
                 node.DoExecute();
+                if (isEnableOnOffMode) {
+                    break;
+                }
             }
         }
 
