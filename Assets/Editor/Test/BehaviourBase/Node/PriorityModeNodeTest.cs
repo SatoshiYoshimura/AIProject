@@ -146,6 +146,61 @@ public class PriorityModeNodeTest {
         Assert.AreEqual(true, mixedExecutePriorityTestActionNode.CanExecute());
     }
 
+    [Test]
+    /// <summary>
+    /// trueとfalseをふくむOr条件でで有効なものだけをPickし優先度順に整列するかのTest
+    /// </summary>
+    public void NodeListOrExecuteEfectiveDecideTest() {
+        PriorityModeNodeForTest priorityModeNodeForTest = new PriorityModeNodeForTest();
+        int maxNodeCount = 10;
+        int descPriority = 10;
+        //整列検証用データを用意
+        // 0 ~ 2 をfalseのみ、　3 ~ 5をtrue のみ 6 以上 を Mixed
+        //Priorityは　降順でつける
+        // 9 8 7 6 5 4 3 がピックされる
+        for (int i = 0; i < maxNodeCount; i++, descPriority--) {
+            PriorityTestActionNode priorityTestActionNode = new PriorityTestActionNode();
+            OrEffectiveExecuteManager orEffectiveExecuteManager = new OrEffectiveExecuteManager();
+            priorityTestActionNode.SetEffectiveExecuteManager(orEffectiveExecuteManager);
+            priorityTestActionNode.Id = i;
+            priorityModeNodeForTest.Priority = descPriority;
+
+            if (i < 3) {
+                priorityTestActionNode.ConfigureCannotExecuteData();
+            } else if (i < 6) {
+                priorityTestActionNode.ConfigureCanExecuteData();
+            } else {
+                priorityTestActionNode.ConfigureMixedExecuteData();
+            }
+
+            priorityModeNodeForTest.AddNode(priorityTestActionNode);
+        }
+
+        //実行可能が加味されて優先度順にPickされてるかTest
+        priorityModeNodeForTest.OnCatchChooseAlignExecutableNodesRequest();
+
+        List<BehaviourBaseNode> testList = priorityModeNodeForTest.GetExecuteNodeList();
+        int count = 0;
+        foreach (PriorityTestActionNode node in testList) {
+            if (count == 0) {
+                Assert.AreEqual(9, node.Id);
+            } else if (count == 1) {
+                Assert.AreEqual(8, node.Id);
+            } else if (count == 2){
+                Assert.AreEqual(7, node.Id);
+            } else if (count == 3) {
+                Assert.AreEqual(6, node.Id);
+            } else if (count == 4) {
+                Assert.AreEqual(5, node.Id);
+            } else if (count == 5) {
+                Assert.AreEqual(4, node.Id);
+            } else if (count == 6) {
+                Assert.AreEqual(3, node.Id);
+            }
+            count++;
+        }
+    }
+
 
     [Test]
     /// <summary>
