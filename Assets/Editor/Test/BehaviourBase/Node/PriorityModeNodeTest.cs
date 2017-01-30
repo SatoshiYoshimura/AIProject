@@ -5,6 +5,9 @@ using NUnit.Framework;
 using Ai.BehaviourBase.Node;
 using Ai.BehaviourBase.EffectiveExecute;
 
+namespace Ai.BehaviourBase.Node{
+
+
 public class PriorityModeNodeTest {
 
 #region Test Declear
@@ -70,7 +73,6 @@ public class PriorityModeNodeTest {
                 effectiveExecuteManager.AddEffectiveExecute(testEffectiveExecute);
             }
         }
-
     }
 
     /// <summary>
@@ -320,4 +322,6 @@ public class PriorityModeNodeTest {
 		Assert.AreEqual(newGameObjectName, gameObject.name);
 	}
 #endregion
+}
+
 }
