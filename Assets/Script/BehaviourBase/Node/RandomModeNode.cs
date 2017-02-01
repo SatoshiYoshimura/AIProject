@@ -29,7 +29,7 @@ namespace Ai.BehaviourBase.Node {
             int initSeed = System.Environment.TickCount;
             int maxNodeCount = nodeList.Count;
             //executeNodeに追加されるnode数もランダムに決める
-            int addNodeCount = Mathf.FloorToInt(Random.Range(0,maxNodeCount));
+            int addNodeCount = Random.Range(0,maxNodeCount);
             //ランダムなNodeをかぶりなくPick
             List<int> selectedNodeIndexList = new List<int>();
             for (int i = 0; i < addNodeCount; i++) {
@@ -41,7 +41,7 @@ namespace Ai.BehaviourBase.Node {
                 }
                 else {
                     if (nodeList[index].CanExecute()) {
-                        base.AddNode(nodeList[index]);
+						base.executeNodeList.Add(nodeList[index]);
                         selectedNodeIndexList.Add(index);
                     }
                 }

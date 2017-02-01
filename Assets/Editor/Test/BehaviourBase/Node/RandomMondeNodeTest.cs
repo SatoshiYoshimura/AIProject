@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using NUnit.Framework;
+using Ai.BehaviourBase.EffectiveExecute;
 
 namespace Ai.BehaviourBase.Node{
 
@@ -14,6 +15,17 @@ namespace Ai.BehaviourBase.Node{
 		public int ID{
 			get { return id; }
 			set { id = value; }
+		}
+
+		/// <summary>
+		/// 既存の設定されているものを削除しEffectiveExecuteMangerを設定します
+		/// </summary>
+		/// <param name="effectiveExecuteManager">Effective execute manager.</param>
+		public void SetEffectiveExecuteManager(EffectiveExecuteManager effectiveExecuteManager){
+			if( base.effectiveExecuteManager != null){
+				base.effectiveExecuteManager = null;
+			}
+			base.effectiveExecuteManager = effectiveExecuteManager;
 		}
 	}
 
@@ -37,6 +49,14 @@ namespace Ai.BehaviourBase.Node{
 			for(int i = 0; i < maxNodeNum; i++) {
 				RandomTestActionNode testRandomActionNode = new RandomTestActionNode();
 				testRandomActionNode.ID = i;
+
+				//ランダムのテストなので、全部実行可能にする
+				TestEffectiveExecute testEffectiveExecute = new TestEffectiveExecute();
+				testEffectiveExecute.TestNumber = 1;
+				OrEffectiveExecuteManager orEffectiveExecuteManager = new OrEffectiveExecuteManager();
+				orEffectiveExecuteManager.AddEffectiveExecute(testEffectiveExecute);
+				testRandomActionNode.SetEffectiveExecuteManager(orEffectiveExecuteManager);
+
 				testRandomNode.AddNode(testRandomActionNode);
 			}
 
