@@ -1,0 +1,24 @@
+﻿
+namespace Ai.BehaviourBase.Node {
+    public class SeaqantialLoopingModeNode : NonActionNode {
+
+        /// <summary>
+        /// あらかじめ決められた順序にそって実行する
+        /// </summary>
+        public override void DoExecute() {
+            foreach (BehaviourBaseNode node in base.executeNodeList) {
+                node.DoExecute();
+            }
+        }
+        /// <summary>
+        /// 順序を決めるのは上位の存在がSwapを用いて決めるため、ここでは有効なものだけを取り出す処理を行う
+        /// </summary>
+        protected override void ChooseAlignExecutableNodes() {
+            foreach (BehaviourBaseNode node in base.nodeList) {
+                if (node.CanExecute()) {
+                    executeNodeList.Add(node);
+                }
+            }
+        }
+    }
+}
