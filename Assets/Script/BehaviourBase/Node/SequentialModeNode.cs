@@ -15,11 +15,17 @@ namespace Ai.BehaviourBase.Node {
         /// あらかじめ決められた順序にそって実行する
         /// </summary>
         public override void DoExecute() {
+            if (isLooping) {
+                for (; ;) {
+                    InternalExecute();
+                }
+            } else {
+                InternalExecute();
+            }
+        }
+        private void InternalExecute() {
             foreach (BehaviourBaseNode node in base.executeNodeList) {
                 node.DoExecute();
-            }
-            if (isLooping) {
-                DoExecute();
             }
         }
 
