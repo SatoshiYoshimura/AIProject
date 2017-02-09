@@ -7,7 +7,7 @@ namespace Ai.BehaviourBase.Node{
 
 
 	/// <summary>
-	/// Random monde action node.
+	/// Test Random mode  action node.
 	/// </summary>
 	public class RandomTestActionNode : ActionNode{
 		private int id = 0;
@@ -26,12 +26,14 @@ namespace Ai.BehaviourBase.Node{
 			}
 			base.effectiveExecuteManager = effectiveExecuteManager;
 		}
+
+
 	}
 
 	/// <summary>
 	/// テスト用に本来外部にはみせないexecuteNodeListを返す関数持ちのRandomModeNode
 	/// </summary>
-	public class RandomMondeNodeTest : RandomModeNode {
+	public class RandomModeNodeTest : RandomModeNode {
 		public List<BehaviourBaseNode> GetExecuteNodeList() {
 			return base.executeNodeList;
 		}
@@ -43,7 +45,7 @@ namespace Ai.BehaviourBase.Node{
 		/// </summary>
 		[Test]
 		public void TestRandomChoose(){
-			RandomMondeNodeTest testRandomNode = new RandomMondeNodeTest();
+			RandomModeNodeTest testRandomNode = new RandomModeNodeTest();
 			int maxNodeNum = 10;
 			for(int i = 0; i < maxNodeNum; i++) {
 				RandomTestActionNode testRandomActionNode = new RandomTestActionNode();
