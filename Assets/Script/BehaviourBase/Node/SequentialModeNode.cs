@@ -6,7 +6,8 @@ namespace Ai.BehaviourBase.Node {
         /// 直下nodeを全部実行後ループするかどうかを表す変数: true Loopする : false Loopしない
         /// </summary>
         private bool isLooping = false;
-        public bool IsLopping {
+        public bool IsLooping {
+            get { return isLooping; }
             set { isLooping = value; }
         }
 
